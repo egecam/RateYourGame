@@ -13,6 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.rateyourgame.screens.GameDetailsScreen
 import com.example.rateyourgame.screens.GameListScreen
+import com.example.rateyourgame.screens.SplashScreen
 import com.example.rateyourgame.ui.theme.RateYourGameTheme
 
 
@@ -36,8 +37,11 @@ fun MyApp() {
 
     NavHost(
         navController = navController,
-        startDestination = "game_list_screen_route"
+        startDestination = "splash_screen"
     ) {
+        composable("splash_screen") {
+            SplashScreen(navController = navController)
+        }
         composable("game_list_screen_route") {
             GameListScreen(navController = navController)
         }
