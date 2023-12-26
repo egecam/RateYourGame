@@ -32,6 +32,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -68,14 +69,11 @@ fun GameDetailsScreen(navController: NavController, gameId: Int) {
         )
         {
             Box(modifier = Modifier, contentAlignment = Alignment.BottomEnd){
-                Image(
-                    painterResource(id = R.drawable.placeholder), //Replace with actual image
-                    contentDescription = "Game Image",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                        .clip(customRoundShape),
-                    contentScale = ContentScale.FillWidth
+                AsyncImage(
+                    model = game.background_image,
+                    placeholder = painterResource(id = R.drawable.placeholder),
+                    error = painterResource(id = R.drawable.placeholder),
+                    contentDescription = "Game Logo",
                 )
 
             }
@@ -86,6 +84,9 @@ fun GameDetailsScreen(navController: NavController, gameId: Int) {
             )
             {
                 Text(text = game.name, fontSize = 26.sp, fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = "Metacritic Score: ", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                Text(text = game.metacritic)
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(text = "Description", fontSize = 20.sp, fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.height(8.dp))
