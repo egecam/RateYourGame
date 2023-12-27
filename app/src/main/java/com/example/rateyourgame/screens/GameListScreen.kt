@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -22,9 +24,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import com.example.rateyourgame.R
 import com.example.rateyourgame.dataclasses.Game
 import com.example.rateyourgame.instances.RetrofitInstance
 import kotlinx.coroutines.Dispatchers
@@ -64,13 +69,10 @@ fun GameListScreen(navController: NavController) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable {
-                                navController.navigate("game_details_screen_route/${game.id}")
-                            }
                             .padding(10.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        GameItem(game)
+                        GameItem(game, navController= navController)
                     }
                     Divider()
                 }
@@ -80,9 +82,37 @@ fun GameListScreen(navController: NavController) {
 }
 
 @Composable
-fun GameItem(game: Game) {
-    Column {
-        Text(text = game.name)
+fun GameItem(game: Game, navController: NavController) {
+    var expanded by remember { mutableStateOf(false) }
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp)
+            .clickable { expanded = !expanded },
+    ) {
+        Column {
+            Text(
+                text = game.name,
+                modifier = Modifier.padding(16.dp)
+            )
+            if (expanded){
+            AsyncImage(
+                model = game.background_image,
+                placeholder = painterResource(id = R.drawable.placeholder),
+                error = painterResource(id = R.drawable.placeholder),
+                contentDescription = "Game Logo",
+            )
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+
+                    Button(onClick = { navController.navigate("game_details_screen_route/${game.id}") }, )
+                {
+
+                }
+
+                }
+
+        }
+        }
     }
 }
 
