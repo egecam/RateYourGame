@@ -11,9 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -74,7 +72,6 @@ fun GameListScreen(navController: NavController) {
                     ) {
                         GameItem(game, navController= navController)
                     }
-                    Divider()
                 }
             }
         }
@@ -83,35 +80,29 @@ fun GameListScreen(navController: NavController) {
 
 @Composable
 fun GameItem(game: Game, navController: NavController) {
-    var expanded by remember { mutableStateOf(false) }
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(10.dp)
-            .clickable { expanded = !expanded },
+            .clickable {
+                navController.navigate("game_details_screen_route/${game.id}")
+            },
     ) {
         Column {
+                Row(modifier = Modifier
+                    .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center) {
+                    AsyncImage(
+                        model = game.background_image,
+                        placeholder = painterResource(id = R.drawable.placeholder),
+                        error = painterResource(id = R.drawable.placeholder),
+                        contentDescription = "Game Logo",
+                    )
+                }
             Text(
                 text = game.name,
                 modifier = Modifier.padding(16.dp)
             )
-            if (expanded){
-            AsyncImage(
-                model = game.background_image,
-                placeholder = painterResource(id = R.drawable.placeholder),
-                error = painterResource(id = R.drawable.placeholder),
-                contentDescription = "Game Logo",
-            )
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-
-                    Button(onClick = { navController.navigate("game_details_screen_route/${game.id}") }, )
-                {
-
-                }
-
-                }
-
-        }
         }
     }
 }
