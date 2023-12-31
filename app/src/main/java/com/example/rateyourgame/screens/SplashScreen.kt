@@ -29,7 +29,7 @@ fun SplashScreen(navController: NavHostController){
     LaunchedEffect(key1 = true){
         delay(2000)
         navController.popBackStack()
-        navController.navigate("game_list_screen_route")
+        navController.navigate("login_screen")
     }
 
 
