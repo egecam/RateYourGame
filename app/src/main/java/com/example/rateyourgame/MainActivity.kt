@@ -8,13 +8,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.room.Room
+import com.example.rateyourgame.ViewModels.AuthViewModel
+import com.example.rateyourgame.ViewModels.SharedViewModel
+import com.example.rateyourgame.database.AppDatabase
 import com.example.rateyourgame.screens.GameDetailsScreen
 import com.example.rateyourgame.screens.GameListScreen
+import com.example.rateyourgame.screens.LoginScreen
+import com.example.rateyourgame.screens.SignUpScreen
 import com.example.rateyourgame.screens.SplashScreen
 import com.example.rateyourgame.ui.theme.RateYourGameTheme
 
@@ -22,13 +29,22 @@ import com.example.rateyourgame.ui.theme.RateYourGameTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val database = Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java, "app-database"
+        ).build()
+
+        val userDao = database.userDao()
+        val authViewModel = AuthViewModel(userDao)
+
         setContent {
             RateYourGameTheme {
+                val sharedViewModel: SharedViewModel = viewModel()
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background) {
-                    MyApp()
+                    MyApp(authViewModel, sharedViewModel)
                 }
             }
         }
@@ -36,7 +52,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MyApp() {
+fun MyApp(authViewModel: AuthViewModel, sharedViewModel: SharedViewModel) {
     val navController = rememberNavController()
 
     NavHost(
@@ -46,10 +62,16 @@ fun MyApp() {
         composable("splash_screen") {
             SplashScreen(navController = navController)
         }
-        composable("game_list_screen_route") {
+        composable("login_screen") {
+            LoginScreen(navController, authViewModel, sharedViewModel)
+        }
+        composable("signup_screen") {
+            SignUpScreen(navController, authViewModel, sharedViewModel)
+        }
+        composable("game_list_screen") {
             GameListScreen(navController = navController)
         }
-        composable("game_details_screen_route/{gameId}",
+        composable("game_details_screen/{gameId}",
             arguments = listOf(navArgument("gameId") { type = NavType.IntType })
         ) { backStackEntry ->
             val gameId = backStackEntry.arguments?.getInt("gameId") ?: 0

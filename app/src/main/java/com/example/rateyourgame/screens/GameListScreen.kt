@@ -85,7 +85,7 @@ fun GameItem(game: Game, navController: NavController) {
             .fillMaxWidth()
             .padding(10.dp)
             .clickable {
-                navController.navigate("game_details_screen_route/${game.id}")
+                navController.navigate("game_details_screen/${game.id}")
             },
     ) {
         Column {
