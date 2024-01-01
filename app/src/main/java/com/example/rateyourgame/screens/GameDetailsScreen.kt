@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -90,20 +91,20 @@ fun GameDetailsScreen(authViewModel: AuthViewModel, ratingViewModel: RatingViewM
                     .padding(20.dp)
             )
             {
-                Text(text = game.name, fontSize = 26.sp, fontWeight = FontWeight.Bold)
+                Text(text = game.name, fontSize = 26.sp, fontWeight = FontWeight.Bold, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "Metacritic Score: ", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                Text(text = game.metacritic)
+                Text(text = "Metacritic Score", fontSize = 20.sp, fontWeight = FontWeight.Bold, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+                Text(text = game.metacritic, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "Description", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                Text(text = "Description", fontSize = 20.sp, fontWeight = FontWeight.Bold, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = game.description_raw)
+                Text(text = game.description_raw, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
                 Spacer(modifier = Modifier.height(20.dp))
 
                 if (averageRating != null) {
-                    Text("Average Rating: $averageRating")
+                    Text("Average Rating: $averageRating", modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
                 } else {
-                    Text("No review available..")
+                    Text("No review available..", modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
                 }
 
                 var currentRating by remember { mutableStateOf(0) }

@@ -137,12 +137,11 @@ fun SignUpScreen(navController: NavController, authViewModel: AuthViewModel, sha
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(25.dp)
+                    .padding(15.dp)
             ) {
                 Spacer(modifier = Modifier.height(30.dp))
                 Text("Sign Up")
             }
-            Spacer(modifier = Modifier.height(16.dp))
             Text("Already have an account?")
             Spacer(modifier = Modifier.height(8.dp))
             Button(
