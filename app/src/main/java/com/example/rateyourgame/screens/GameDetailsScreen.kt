@@ -48,6 +48,7 @@ fun GameDetailsScreen(authViewModel: AuthViewModel, ratingViewModel: RatingViewM
     val user by authViewModel.user.collectAsState()
     val coroutineScope = rememberCoroutineScope()
     var averageRating by remember { mutableStateOf<Float?>(null) }
+    var ratingCount by remember { mutableStateOf<Int>(0) }
     var userRating by remember { mutableStateOf<Int?>(null) }
     var isReviewSubmitted by remember { mutableStateOf(false) }
 
@@ -61,6 +62,7 @@ fun GameDetailsScreen(authViewModel: AuthViewModel, ratingViewModel: RatingViewM
     LaunchedEffect(ratingViewModel) {
         userRating = ratingViewModel.getRatingScoreByUserIdAndGameId(user?.id, gameId)
         averageRating = ratingViewModel.getAverageRatingByGameId(gameId)
+        ratingCount = ratingViewModel.getRatingCount(gameId)
     }
 
     LaunchedEffect(ratingViewModel) {
@@ -102,6 +104,7 @@ fun GameDetailsScreen(authViewModel: AuthViewModel, ratingViewModel: RatingViewM
                 Spacer(modifier = Modifier.height(20.dp))
 
                 if (averageRating != null) {
+                    Text("Rating Count: $ratingCount", modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
                     Text("Average Rating: $averageRating", modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
                 } else {
                     Text("No review available..", modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
@@ -175,6 +178,7 @@ fun GameDetailsScreen(authViewModel: AuthViewModel, ratingViewModel: RatingViewM
 
                             coroutineScope.launch {
                                 averageRating = ratingViewModel.getAverageRatingByGameId(gameId)
+                                ratingCount = ratingViewModel.getRatingCount(gameId)
                             }
                         },
                         title = { Text("Thank You!") },
@@ -185,6 +189,7 @@ fun GameDetailsScreen(authViewModel: AuthViewModel, ratingViewModel: RatingViewM
 
                                 coroutineScope.launch {
                                     averageRating = ratingViewModel.getAverageRatingByGameId(gameId)
+                                    ratingCount = ratingViewModel.getRatingCount(gameId)
                                     userRating = ratingViewModel.getRatingScoreByUserIdAndGameId(user?.id, gameId)
                                 }
 

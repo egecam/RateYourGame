@@ -16,4 +16,7 @@ interface RatingDao {
 
     @Query("SELECT rating FROM ratings WHERE userId = :userId AND gameId = :gameId")
     suspend fun getRatingScoreByUserIdAndGameId(userId: Int?, gameId: Int): Int?
+
+    @Query("SELECT COUNT(*) FROM ratings WHERE gameId = :gameId")
+    suspend fun getRatingCount(gameId: Int): Int
 }

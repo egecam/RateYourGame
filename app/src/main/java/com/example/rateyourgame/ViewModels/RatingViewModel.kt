@@ -18,4 +18,7 @@ class RatingViewModel(private val ratingDao: RatingDao) : ViewModel() {
     suspend fun getRatingScoreByUserIdAndGameId(userId: Int?, gameId: Int): Int? {
         return ratingDao.getRatingScoreByUserIdAndGameId(userId, gameId)
     }
+    suspend fun getRatingCount(gameId: Int): Int {
+        return ratingDao.getRatingCount(gameId)
+    }
 }

@@ -41,7 +41,7 @@ fun SignUpScreen(navController: NavController, authViewModel: AuthViewModel, sha
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var showError by remember { mutableStateOf(false) }
-    var infoMessage by remember { mutableStateOf("") }
+    var emptyUserError by remember { mutableStateOf(false) }
     var showSuccessMessage by remember { mutableStateOf(false) }
     val shapeis = if (isSystemInDarkTheme()) painterResource(id = R.drawable.loginshapenight) else painterResource(
         id = R.drawable.loginshape)
@@ -117,6 +117,29 @@ fun SignUpScreen(navController: NavController, authViewModel: AuthViewModel, sha
                     }
                 )
             }
+
+            if (emptyUserError) {
+                AlertDialog(
+                    onDismissRequest = {
+                        emptyUserError = false
+                    },
+                    title = {
+                        Text(text = "Couldn't Sign Up")
+                    },
+                    text = {
+                        Text("Username or Password can't be empty.")
+                    },
+                    confirmButton = {
+                        Button(
+                            onClick = {
+                                emptyUserError = false
+                            }
+                        ) {
+                            Text("OK")
+                        }
+                    }
+                )
+            }
             if (showSuccessMessage) {
                 navController.previousBackStackEntry?.arguments?.putString("success_message", "Account created successfully!")
             }
@@ -126,7 +149,11 @@ fun SignUpScreen(navController: NavController, authViewModel: AuthViewModel, sha
                         val existingUser = authViewModel.isUserExists(username, password)
                         if (existingUser) {
                             showError = true
-                        } else {
+                        }
+                        else if(username == "" || password == "") {
+                            emptyUserError = true
+                        }
+                        else {
                             val newUser = User(username = username, password = password)
                             authViewModel.signUp(newUser)
                             sharedViewModel.setSuccessMessage("Account created successfully!")
