@@ -41,7 +41,7 @@ fun SignUpScreen(navController: NavController, authViewModel: AuthViewModel, sha
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var showError by remember { mutableStateOf(false) }
-    var showEmptyCredentialsError by remember { mutableStateOf(false) }
+    var infoMessage by remember { mutableStateOf("") }
     var showSuccessMessage by remember { mutableStateOf(false) }
     val shapeis = if (isSystemInDarkTheme()) painterResource(id = R.drawable.loginshapenight) else painterResource(
         id = R.drawable.loginshape)
@@ -69,46 +69,6 @@ fun SignUpScreen(navController: NavController, authViewModel: AuthViewModel, sha
             )
             Spacer(modifier = Modifier.height(8.dp))
         }
-
-        if (showEmptyCredentialsError) {
-            AlertDialog(
-                onDismissRequest = {
-                    showEmptyCredentialsError = false
-                },
-                title = {
-                    Text(text = "Couldn't Sign Up")
-                },
-                text = {
-                    Text("Username or password can't be empty.")
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            showEmptyCredentialsError = false
-                        }
-                    ) {
-                        Text("OK")
-                    }
-                }
-            )
-        }
-
-        if (showSuccessMessage) {
-            navController.previousBackStackEntry?.arguments?.putString("success_message", "Account created successfully!")
-        }
-        Button(
-            onClick = {
-                authViewModel.viewModelScope.launch {
-                    val existingUser = authViewModel.isUserExists(username, password)
-                    if (existingUser) {
-                        showError = true
-                    } else if(username == "" || password == "") {
-                        showEmptyCredentialsError = true
-                    }
-                    else {
-                        val newUser = User(username = username, password = password)
-                        authViewModel.signUp(newUser)
-                        sharedViewModel.setSuccessMessage("Account created successfully!")
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -170,6 +130,7 @@ fun SignUpScreen(navController: NavController, authViewModel: AuthViewModel, sha
                             val newUser = User(username = username, password = password)
                             authViewModel.signUp(newUser)
                             sharedViewModel.setSuccessMessage("Account created successfully!")
+
                             navController.popBackStack()
                         }
                     }
@@ -190,11 +151,9 @@ fun SignUpScreen(navController: NavController, authViewModel: AuthViewModel, sha
                 }
 
             ) {
-                
+
                 Text("Login")
             }
         }
-
-
     }
 }
