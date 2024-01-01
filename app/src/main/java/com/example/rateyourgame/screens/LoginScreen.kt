@@ -33,23 +33,19 @@ fun LoginScreen(navController: NavController,  authViewModel: AuthViewModel, sha
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var showError by remember { mutableStateOf(false) }
-    var infoMessage by remember { mutableStateOf("") }
 
-    // Retrieve success message from SharedViewModel
     val successMessage = sharedViewModel.successMessage.collectAsState().value
 
-    // Update the success message when username or password is changed
     DisposableEffect(username, password) {
         onDispose {
-            sharedViewModel.setSuccessMessage("") // Clear the success message
+            sharedViewModel.setSuccessMessage("")
         }
     }
 
-    // Show AlertDialog when successMessage is not null or empty
     if (successMessage?.isNotEmpty() == true) {
         AlertDialog(
             onDismissRequest = {
-                sharedViewModel.setSuccessMessage("") // Clear the success message
+                sharedViewModel.setSuccessMessage("")
             },
             title = {
                 Text(text = "Success")
@@ -60,7 +56,7 @@ fun LoginScreen(navController: NavController,  authViewModel: AuthViewModel, sha
             confirmButton = {
                 Button(
                     onClick = {
-                        sharedViewModel.setSuccessMessage("") // Clear the success message
+                        sharedViewModel.setSuccessMessage("")
                     }
                 ) {
                     Text("OK")
@@ -92,7 +88,7 @@ fun LoginScreen(navController: NavController,  authViewModel: AuthViewModel, sha
         if (showError) {
             AlertDialog(
                 onDismissRequest = {
-                    showError = false // Clear the success message
+                    showError = false
                 },
                 title = {
                     Text(text = "Couldn't log in")
@@ -103,7 +99,7 @@ fun LoginScreen(navController: NavController,  authViewModel: AuthViewModel, sha
                 confirmButton = {
                     Button(
                         onClick = {
-                            showError = false // Clear the success message
+                            showError = false
                         }
                     ) {
                         Text("OK")
@@ -113,10 +109,11 @@ fun LoginScreen(navController: NavController,  authViewModel: AuthViewModel, sha
         }
         Button(
             onClick = {
-                // Perform login logic
                 authViewModel.viewModelScope.launch {
                     val user = authViewModel.login(username, password)
                     if (user != null) {
+                        authViewModel.setUser(user)
+
                         navController.navigate("game_list_screen")
                     } else {
                         showError = true

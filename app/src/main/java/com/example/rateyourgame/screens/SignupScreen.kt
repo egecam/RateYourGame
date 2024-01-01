@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -15,7 +16,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
@@ -54,29 +54,39 @@ fun SignUpScreen(navController: NavController, authViewModel: AuthViewModel, sha
             visualTransformation = PasswordVisualTransformation()
         )
         if (showError) {
-            Text(
-                text = infoMessage,
-                color = Color.Red,
-                modifier = Modifier.padding(8.dp)
+            AlertDialog(
+                onDismissRequest = {
+                    showError = false
+                },
+                title = {
+                    Text(text = "Couldn't Sign Up")
+                },
+                text = {
+                    Text("Account with the same username or password already exists.")
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            showError = false
+                        }
+                    ) {
+                        Text("OK")
+                    }
+                }
             )
         }
         if (showSuccessMessage) {
-            // Pass success message to LoginScreen
             navController.previousBackStackEntry?.arguments?.putString("success_message", "Account created successfully!")
         }
         Button(
             onClick = {
-                // Perform signup logic
                 authViewModel.viewModelScope.launch {
-                    val existingUser = authViewModel.login(username, password)
-                    if (existingUser != null) {
+                    val existingUser = authViewModel.isUserExists(username, password)
+                    if (existingUser) {
                         showError = true
-                        infoMessage = "Account with the same username or password already exists."
                     } else {
                         val newUser = User(username = username, password = password)
                         authViewModel.signUp(newUser)
-
-                        // Set success message in the shared ViewModel
                         sharedViewModel.setSuccessMessage("Account created successfully!")
 
                         navController.popBackStack()

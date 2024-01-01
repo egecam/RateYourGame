@@ -16,6 +16,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.room.Room
 import com.example.rateyourgame.ViewModels.AuthViewModel
+import com.example.rateyourgame.ViewModels.RatingViewModel
 import com.example.rateyourgame.ViewModels.SharedViewModel
 import com.example.rateyourgame.database.AppDatabase
 import com.example.rateyourgame.screens.GameDetailsScreen
@@ -36,15 +37,16 @@ class MainActivity : ComponentActivity() {
 
         val userDao = database.userDao()
         val authViewModel = AuthViewModel(userDao)
+        val ratingDao = database.ratingDao()
+        val ratingViewModel = RatingViewModel(ratingDao)
 
         setContent {
             RateYourGameTheme {
                 val sharedViewModel: SharedViewModel = viewModel()
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background) {
-                    MyApp(authViewModel, sharedViewModel)
+                    MyApp(authViewModel, sharedViewModel, ratingViewModel)
                 }
             }
         }
@@ -52,7 +54,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MyApp(authViewModel: AuthViewModel, sharedViewModel: SharedViewModel) {
+fun MyApp(authViewModel: AuthViewModel, sharedViewModel: SharedViewModel, ratingViewModel: RatingViewModel) {
     val navController = rememberNavController()
 
     NavHost(
@@ -69,13 +71,13 @@ fun MyApp(authViewModel: AuthViewModel, sharedViewModel: SharedViewModel) {
             SignUpScreen(navController, authViewModel, sharedViewModel)
         }
         composable("game_list_screen") {
-            GameListScreen(navController = navController)
+            GameListScreen(navController = navController, authViewModel)
         }
         composable("game_details_screen/{gameId}",
             arguments = listOf(navArgument("gameId") { type = NavType.IntType })
         ) { backStackEntry ->
             val gameId = backStackEntry.arguments?.getInt("gameId") ?: 0
-            GameDetailsScreen(navController = navController, gameId = gameId)
+            GameDetailsScreen(authViewModel, ratingViewModel, gameId = gameId)
         }
     }
 }

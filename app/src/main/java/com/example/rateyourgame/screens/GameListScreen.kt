@@ -16,6 +16,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,15 +29,18 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.rateyourgame.R
+import com.example.rateyourgame.ViewModels.AuthViewModel
 import com.example.rateyourgame.dataclasses.Game
 import com.example.rateyourgame.instances.RetrofitInstance
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 @Composable
-fun GameListScreen(navController: NavController) {
+fun GameListScreen(navController: NavController, authViewModel: AuthViewModel) {
     var games by remember { mutableStateOf<List<Game>>(emptyList()) }
-    val apiKey = "7e45a963d9924c2cb094208bddb962b3" // Replace with your actual API key
+    val apiKey = "7e45a963d9924c2cb094208bddb962b3"
+
+    val user by authViewModel.user.collectAsState()
 
     LaunchedEffect(apiKey) {
         val fetchedGames = fetchData(apiKey)
@@ -56,7 +60,7 @@ fun GameListScreen(navController: NavController) {
             horizontalAlignment = Alignment.Start
         ) {
             Text(
-                text = "RateYourGame",
+                text = "Welcome ${user?.username}",
                 fontWeight = FontWeight.Bold
             )
 

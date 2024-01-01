@@ -10,6 +10,9 @@ interface UserDao {
     @Query("SELECT * FROM users WHERE username = :username AND password = :password")
     fun login(username: String, password: String): User?
 
+    @Query("SELECT * FROM users WHERE username = :username OR password = :password")
+    suspend fun findUser(username: String, password: String): User?
+
     @Insert
     fun signUp(user: User)
 }
