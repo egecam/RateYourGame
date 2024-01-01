@@ -30,7 +30,7 @@ fun SignUpScreen(navController: NavController, authViewModel: AuthViewModel, sha
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var showError by remember { mutableStateOf(false) }
-    var infoMessage by remember { mutableStateOf("") }
+    var showEmptyCredentialsError by remember { mutableStateOf(false) }
     var showSuccessMessage by remember { mutableStateOf(false) }
 
     Column(
@@ -75,6 +75,30 @@ fun SignUpScreen(navController: NavController, authViewModel: AuthViewModel, sha
                 }
             )
         }
+
+        if (showEmptyCredentialsError) {
+            AlertDialog(
+                onDismissRequest = {
+                    showEmptyCredentialsError = false
+                },
+                title = {
+                    Text(text = "Couldn't Sign Up")
+                },
+                text = {
+                    Text("Username or password can't be empty.")
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            showEmptyCredentialsError = false
+                        }
+                    ) {
+                        Text("OK")
+                    }
+                }
+            )
+        }
+
         if (showSuccessMessage) {
             navController.previousBackStackEntry?.arguments?.putString("success_message", "Account created successfully!")
         }
@@ -84,7 +108,10 @@ fun SignUpScreen(navController: NavController, authViewModel: AuthViewModel, sha
                     val existingUser = authViewModel.isUserExists(username, password)
                     if (existingUser) {
                         showError = true
-                    } else {
+                    } else if(username == "" || password == "") {
+                        showEmptyCredentialsError = true
+                    }
+                    else {
                         val newUser = User(username = username, password = password)
                         authViewModel.signUp(newUser)
                         sharedViewModel.setSuccessMessage("Account created successfully!")
